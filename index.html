@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>오늘의 한국 주식 추천</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="container">
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-        <h1>Lotto Number Generator</h1>
-        <div id="numbers-container" class="numbers-container"></div>
-        <button id="generate-btn" class="generate-btn">Generate Numbers</button>
+        <p class="date-display" id="date-display"></p>
+        <h1>오늘의 추천 종목</h1>
+        <div id="stocks-container" class="stocks-container"></div>
+        <button id="generate-btn" class="generate-btn">새로운 추천 받기</button>
     </main>
     <script src="main.js" type="module"></script>
 </body>
