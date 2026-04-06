@@ -1,12 +1,12 @@
 :root {
-    --primary-color: #e53935; /* Red for rise in Korea */
+    --primary-color: #6c5ce7;
     --background-color: #121212;
     --card-background: rgba(255, 255, 255, 0.05);
     --text-color: #e0e0e0;
-    --shadow-color: rgba(229, 57, 53, 0.1);
+    --shadow-color: rgba(108, 92, 231, 0.1);
     --card-text: #ffffff;
     --border-color: rgba(255, 255, 255, 0.1);
-    --positive-color: #ff5252;
+    --positive-color: #a29bfe;
 }
 
 .light-mode {
@@ -16,8 +16,8 @@
     --shadow-color: rgba(0, 0, 0, 0.05);
     --card-text: #333333;
     --border-color: #e0e0e0;
-    --primary-color: #d32f2f;
-    --positive-color: #d32f2f;
+    --primary-color: #6c5ce7;
+    --positive-color: #6c5ce7;
 }
 
 body {
@@ -73,52 +73,119 @@ h1 {
     font-size: 2rem;
     font-weight: 700;
     margin-top: 0;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
-.stocks-container {
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+.upload-container {
+    margin-bottom: 40px;
+}
+
+.upload-area {
+    border: 2px dashed var(--primary-color);
+    border-radius: 12px;
+    padding: 40px;
+    cursor: pointer;
+    background: rgba(108, 92, 231, 0.05);
+    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
-    min-height: 100px;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    position: relative;
+    overflow: hidden;
 }
 
-.stock-card {
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px;
+.upload-area:hover {
+    background: rgba(108, 92, 231, 0.1);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.image-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 10;
+}
+
+.loading {
+    margin-bottom: 40px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.result-container {
+    text-align: left;
+    margin-bottom: 40px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+}
+
+.label-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.result-item {
+    width: 100%;
+}
+
+.result-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 6px var(--shadow-color);
-    animation: slideUp 0.5s ease-out forwards;
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-.stock-info {
-    text-align: left;
-}
-
-.stock-name {
-    font-size: 1.4rem;
+    margin-bottom: 8px;
     font-weight: 700;
-    color: var(--card-text);
-    margin-bottom: 5px;
 }
 
-.stock-reason {
-    font-size: 0.9rem;
-    color: var(--text-color);
-    opacity: 0.8;
+.bar-container {
+    height: 12px;
+    background: var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
 }
 
-.stock-return {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--positive-color);
+.bar {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 6px;
+    transition: width 0.5s ease-out;
 }
 
 .generate-btn {
@@ -135,7 +202,7 @@ h1 {
 }
 
 .generate-btn:hover {
-    background-color: #c62828;
+    background-color: #5b4bc4;
     transform: translateY(-2px);
 }
 
@@ -213,11 +280,4 @@ h1 {
 .comments-section {
     text-align: left;
     margin-top: 20px;
-}
-
-@keyframes slideUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }

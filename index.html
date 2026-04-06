@@ -3,19 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘의 한국 주식 추천</title>
+    <title>동물상 테스트 - 나를 닮은 동물은?</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- TensorFlow.js and Teachable Machine Image library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
     <main class="container">
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
         <p class="date-display" id="date-display"></p>
-        <h1>오늘의 추천 종목</h1>
-        <div id="stocks-container" class="stocks-container"></div>
-        <button id="generate-btn" class="generate-btn">새로운 추천 받기</button>
+        <h1>인공지능 동물상 테스트</h1>
+        <p class="subtitle">나는 어떤 동물을 닮았을까? 지금 바로 확인해보세요!</p>
+
+        <div class="upload-container">
+            <div id="upload-area" class="upload-area">
+                <div class="upload-icon">📸</div>
+                <p>얼굴 사진을 올리거나 눌러서 선택하세요</p>
+                <img id="image-preview" class="image-preview" alt="Preview" style="display: none;">
+            </div>
+            <input type="file" id="file-input" accept="image/*" hidden>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>AI가 분석 중입니다...</p>
+        </div>
+
+        <div id="result-container" class="result-container" style="display: none;">
+            <h2 id="result-message">분석 결과</h2>
+            <div id="label-container" class="label-container"></div>
+            <button id="retry-btn" class="generate-btn" style="margin-top: 20px;">다시 하기</button>
+        </div>
 
         <section class="contact-section">
             <hr class="divider">

@@ -1,51 +1,103 @@
-const generateBtn = document.getElementById('generate-btn');
-const stocksContainer = document.getElementById('stocks-container');
+const uploadArea = document.getElementById('upload-area');
+const fileInput = document.getElementById('file-input');
+const imagePreview = document.getElementById('image-preview');
+const loading = document.getElementById('loading');
+const resultContainer = document.getElementById('result-container');
+const labelContainer = document.getElementById('label-container');
+const retryBtn = document.getElementById('retry-btn');
 const themeToggle = document.getElementById('theme-toggle');
 const dateDisplay = document.getElementById('date-display');
 
-const kStocks = [
-    { name: '삼성전자', reason: '반도체 업황 턴어라운드 기대감', return: '+5.2%' },
-    { name: 'SK하이닉스', reason: 'HBM 수요 폭발적 증가', return: '+7.8%' },
-    { name: '현대차', reason: '북미 전기차 시장 점유율 확대', return: '+4.5%' },
-    { name: 'NAVER', reason: 'AI 서비스 본격화 및 실적 개선', return: '+6.1%' },
-    { name: '카카오', reason: '핵심 사업 수익성 회복 전망', return: '+5.5%' },
-    { name: 'LG에너지솔루션', reason: '미국 IRA 혜택 본격화', return: '+8.3%' },
-    { name: '셀트리온', reason: '합병 시너지 및 신약 파이프라인', return: '+6.7%' },
-    { name: 'POSCO홀딩스', reason: '이차전지 소재 밸류체인 완성', return: '+5.9%' },
-    { name: '기아', reason: 'SUV 판매 호조 및 환율 효과', return: '+4.8%' },
-    { name: '한화에어로스페이스', reason: '방산 수출 수주 잔고 증가', return: '+9.2%' }
-];
+const MODEL_URL = "https://teachablemachine.withgoogle.com/models/24cM6bbr-/";
+let model, maxPredictions;
 
+// Initialize Teachable Machine Model
+async function init() {
+    const modelURL = MODEL_URL + "model.json";
+    const metadataURL = MODEL_URL + "metadata.json";
+
+    try {
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+    } catch (error) {
+        console.error("Model loading failed:", error);
+    }
+}
+
+// Handle Image Upload
+uploadArea.addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            predict();
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Run Prediction
+async function predict() {
+    if (!model) await init();
+
+    loading.style.display = 'block';
+    resultContainer.style.display = 'none';
+
+    // Wait a bit for the UI to update
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const prediction = await model.predict(imagePreview);
+    prediction.sort((a, b) => b.probability - a.probability);
+
+    displayResults(prediction);
+}
+
+// Display Results
+function displayResults(prediction) {
+    loading.style.display = 'none';
+    resultContainer.style.display = 'block';
+    labelContainer.innerHTML = '';
+
+    prediction.forEach(p => {
+        const percentage = (p.probability * 100).toFixed(0);
+        const resultItem = document.createElement('div');
+        resultItem.classList.add('result-item');
+        resultItem.innerHTML = `
+            <div class="result-header">
+                <span>${p.className}</span>
+                <span>${percentage}%</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar" style="width: ${percentage}%"></div>
+            </div>
+        `;
+        labelContainer.appendChild(resultItem);
+    });
+
+    // Scroll to results
+    resultContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Retry
+retryBtn.addEventListener('click', () => {
+    imagePreview.style.display = 'none';
+    imagePreview.src = '#';
+    resultContainer.style.display = 'none';
+    fileInput.value = '';
+    uploadArea.scrollIntoView({ behavior: 'smooth' });
+});
+
+// Utility Functions
 function setDate() {
     const today = new Date();
     const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
     dateDisplay.textContent = today.toLocaleDateString('ko-KR', options);
 }
 
-function getRandomStocks(count) {
-    const shuffled = [...kStocks].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-}
-
-function displayStocks(stocks) {
-    stocksContainer.innerHTML = '';
-    stocks.forEach((stock, index) => {
-        const card = document.createElement('div');
-        card.classList.add('stock-card');
-        card.style.animationDelay = `${index * 0.1}s`;
-        
-        card.innerHTML = `
-            <div class="stock-info">
-                <div class="stock-name">${stock.name}</div>
-                <div class="stock-reason">${stock.reason}</div>
-            </div>
-            <div class="stock-return">예상 ${stock.return}</div>
-        `;
-        stocksContainer.appendChild(card);
-    });
-}
-
-// Theme Toggle logic
 function updateThemeIcon(isLight) {
     themeToggle.textContent = isLight ? '☀️' : '🌙';
 }
@@ -65,12 +117,7 @@ themeToggle.addEventListener('click', () => {
     updateThemeIcon(isLight);
 });
 
-generateBtn.addEventListener('click', () => {
-    const recommendedStocks = getRandomStocks(3);
-    displayStocks(recommendedStocks);
-});
-
 // Initialize
 initTheme();
 setDate();
-displayStocks(getRandomStocks(3));
+init(); // Pre-load model
